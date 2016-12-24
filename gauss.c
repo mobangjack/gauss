@@ -68,8 +68,10 @@ float GaussFilter(struct Gauss* gauss, float x) {
 void GaussDestroy(struct Gauss* gauss)
 {
   if (gauss != NULL) {
-    free(gauss->buf);
-    gauss->buf = NULL;
+    if (gauss->buf != NULL) {
+      free(gauss->buf);
+      gauss->buf = NULL;
+    }
     free(gauss);
     gauss = NULL;
   }
