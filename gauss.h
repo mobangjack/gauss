@@ -36,7 +36,7 @@ typedef struct
   uint16_t n; // initialization counter
   uint16_t i; // current enqueuing buffer index
   float sum;  // sum of buffer
-  float diff; // diff of sum
+  float delta_sum;  // delta of sum
   float res0; // residual of the number 0 parameter
   float resn; // residual of the number (n - 1) parameter
   float mean; // mean of buffer

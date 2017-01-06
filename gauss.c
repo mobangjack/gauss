@@ -39,7 +39,7 @@ void GaussReset(Gauss_t* gauss)
 	gauss->n = 0;
 	gauss->i = 0;
 	gauss->sum = 0;
-	gauss->diff = 0;
+	gauss->delta_sum = 0;
 	gauss->res0 = 0;
 	gauss->resn = 0;
 	gauss->mean = 0;
@@ -58,7 +58,8 @@ void GaussProc(Gauss_t* gauss, float x) {
 	gauss->last_mse = gauss->mse;
 	if (gauss->n < gauss->N) {
 		gauss->buf[gauss->n++] = x;
-		gauss->sum += x;
+		gauss->delta_sum = x;
+		gauss->sum += gauss->delta_sum;
 		gauss->mean = gauss->sum / gauss->n;
 		gauss->delta_mean = gauss->mean - gauss->last_mean;
 		gauss->resn = x - gauss->mean;
@@ -68,13 +69,13 @@ void GaussProc(Gauss_t* gauss, float x) {
 		gauss->err = SQR(gauss->delta_mean) + SQR(gauss->delta_mse);
 	} else {
 		if (gauss->i == gauss->N) gauss->i = 0;
-		gauss->diff = x - gauss->buf[gauss->i];
-		gauss->sum += gauss->diff;
+		gauss->delta_sum = x - gauss->buf[gauss->i];
+		gauss->sum += gauss->delta_sum;
 		gauss->mean = gauss->sum / gauss->n;
 		gauss->delta_mean = gauss->mean - gauss->last_mean;
 		gauss->res0 = gauss->buf[gauss->i] - gauss->last_mean;
 		gauss->resn = x - gauss->mean;
-		gauss->delta_sse = (gauss->diff) * (gauss->resn + gauss->res0);
+		gauss->delta_sse = (gauss->delta_sum) * (gauss->resn + gauss->res0);
 		gauss->sse += gauss->delta_sse;
 		gauss->mse = gauss->sse / gauss->n;
 		gauss->delta_mse = gauss->mse - gauss->last_mse;
